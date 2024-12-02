@@ -23,7 +23,7 @@ namespace RLE_Algorithm
             ArchiveDirectory = Path.Combine(ArchiveDirectory, "Archive");
             Directory.CreateDirectory(ArchiveDirectory);
 
-            manager = new ArchiveManager((ICompressor)new RLECompressor(), ArchiveDirectory);
+            manager = new ArchiveManager((ICompressor)new RLECompressor(), ArchiveDirectory, InputTextBox, OutputTextBox);
         }
 
         private void SelectFileButton_Click(object sender, EventArgs e)
@@ -39,12 +39,12 @@ namespace RLE_Algorithm
 
         private void ArchiveButton_Click(object sender, EventArgs e)
         {
-            manager.Compress(InputTextBox, OutputTextBox, ratioLabel);
+            manager.Compress(ratioLabel);
         }
 
         private void UnarchiveButton_Click(object sender, EventArgs e)
         {
-            manager.Decompress(InputTextBox, OutputTextBox);
+            manager.Decompress();
         }
 
         private void SaveToFileButton_Click(object sender, EventArgs e)

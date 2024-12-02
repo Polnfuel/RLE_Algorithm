@@ -14,7 +14,7 @@ namespace RLE_Algorithm
         public TextBox InputTextBox { get; set; }
         public TextBox OutputTextBox { get; set; }
         public Label RatioLabel { get; set; }
-        public DateTime Time { get; set; } = DateTime.Now;
         public string ErrorComment { get; set; }
+        public string FileName { get; set; }
     }
 }

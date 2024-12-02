@@ -11,6 +11,9 @@ namespace RLE_Algorithm
     {
         private readonly ICompressor compressor;
         private readonly Logger logger;
+        public ArchiveEventArgs archiveArgs { get; set; }
+        private TextBox InputTextBox { get; set; }
+        private TextBox OutputTextBox { get; set; }
         public string InputFilePath { get; set; }
         public string LogFilePath { get; set; }
 
@@ -19,11 +22,18 @@ namespace RLE_Algorithm
         public event EventHandler<ArchiveEventArgs> FileSaved;
         public event EventHandler<ArchiveEventArgs> ErrorOccured;
 
-        public ArchiveManager(ICompressor compressor, string archivedirectory) 
+        public ArchiveManager(ICompressor compressor, string archivedirectory, TextBox inputbox, TextBox outputbox) 
         {
             this.compressor = compressor;
             logger = new Logger(this);
             LogFilePath = Path.Combine(archivedirectory, "archive.log");
+            InputTextBox = inputbox;
+            OutputTextBox = outputbox;
+            archiveArgs = new ArchiveEventArgs() { 
+                LogFilePath = LogFilePath, 
+                InputTextBox = InputTextBox, 
+                OutputTextBox = OutputTextBox 
+            };
         }
         
         public string ReadFromFile(string path)
@@ -48,48 +58,42 @@ namespace RLE_Algorithm
             {
                 throw new Exception();
             }
+            archiveArgs.FileName = path;
+            OnFileSaved(archiveArgs);
         }
-        public void Compress(TextBox inputbox, TextBox outputbox, Label ratiolabel)
+        public void Compress(Label ratiolabel)
         {
-            string alltext = inputbox.Text;
+            string alltext = InputTextBox.Text;
             if (string.IsNullOrEmpty(alltext))
             {
-                OnErrorOccured(new ArchiveEventArgs() { LogFilePath = LogFilePath, ErrorComment = "Поле ввода пусто"});
+                archiveArgs.ErrorComment = "Поле ввода пусто";
+                OnErrorOccured(archiveArgs);
             }
             else
             {
                 string outputtext = compressor.CompressText(alltext);
-                outputbox.Text = outputtext;
-                OnTextCompressed(new ArchiveEventArgs()
-                {
-                    InputTextSize = alltext.Length,
-                    OutputTextSize = outputtext.Length,
-                    InputTextBox = inputbox,
-                    OutputTextBox = outputbox,
-                    RatioLabel = ratiolabel,
-                    LogFilePath = LogFilePath
-                });
+                OutputTextBox.Text = outputtext;
+                archiveArgs.InputTextSize = alltext.Length;
+                archiveArgs.OutputTextSize = outputtext.Length;
+                archiveArgs.RatioLabel = ratiolabel;
+                OnTextCompressed(archiveArgs);
             }
         }
-        public void Decompress(TextBox inputbox, TextBox outputbox)
+        public void Decompress()
         {
-            string alltext = inputbox.Text;
+            string alltext = InputTextBox.Text;
             if (string.IsNullOrEmpty(alltext))
             {
-                OnErrorOccured(new ArchiveEventArgs() { LogFilePath = LogFilePath, ErrorComment = "Поле ввода пусто" });
+                archiveArgs.ErrorComment = "Поле ввода пусто";
+                OnErrorOccured(archiveArgs);
             }
             else
             {
                 string outputtext = compressor.DecompressText(alltext);
-                outputbox.Text = outputtext;
-                OnTextDecompressed(new ArchiveEventArgs()
-                {
-                    InputTextSize = alltext.Length,
-                    OutputTextSize = outputtext.Length,
-                    InputTextBox = inputbox,
-                    OutputTextBox = outputbox,
-                    LogFilePath = LogFilePath
-                });
+                OutputTextBox.Text = outputtext;
+                archiveArgs.InputTextSize = alltext.Length;
+                archiveArgs.OutputTextSize = outputtext.Length;
+                OnTextDecompressed(archiveArgs);
             }
         }
         protected virtual void OnTextCompressed(ArchiveEventArgs args)
