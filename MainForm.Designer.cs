@@ -37,8 +37,8 @@
             label2 = new Label();
             OutputTextBox = new TextBox();
             label3 = new Label();
-            button1 = new Button();
-            button2 = new Button();
+            UnarchiveButton = new Button();
+            SaveToFileButton = new Button();
             SaveFileDialog = new SaveFileDialog();
             ratioLabel = new Label();
             SuspendLayout();
@@ -115,23 +115,25 @@
             label3.TabIndex = 10;
             label3.Text = "или";
             // 
-            // button1
+            // UnarchiveButton
             // 
-            button1.Location = new Point(468, 13);
-            button1.Name = "button1";
-            button1.Size = new Size(143, 29);
-            button1.TabIndex = 11;
-            button1.Text = "Разархивировать";
-            button1.UseVisualStyleBackColor = true;
+            UnarchiveButton.Location = new Point(468, 13);
+            UnarchiveButton.Name = "UnarchiveButton";
+            UnarchiveButton.Size = new Size(143, 29);
+            UnarchiveButton.TabIndex = 11;
+            UnarchiveButton.Text = "Разархивировать";
+            UnarchiveButton.UseVisualStyleBackColor = true;
+            UnarchiveButton.Click += UnarchiveButton_Click;
             // 
-            // button2
+            // SaveToFileButton
             // 
-            button2.Location = new Point(405, 400);
-            button2.Name = "button2";
-            button2.Size = new Size(146, 29);
-            button2.TabIndex = 12;
-            button2.Text = "Сохранить в файл";
-            button2.UseVisualStyleBackColor = true;
+            SaveToFileButton.Location = new Point(405, 400);
+            SaveToFileButton.Name = "SaveToFileButton";
+            SaveToFileButton.Size = new Size(146, 29);
+            SaveToFileButton.TabIndex = 12;
+            SaveToFileButton.Text = "Сохранить в файл";
+            SaveToFileButton.UseVisualStyleBackColor = true;
+            SaveToFileButton.Click += SaveToFileButton_Click;
             // 
             // ratioLabel
             // 
@@ -148,8 +150,8 @@
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
             Controls.Add(ratioLabel);
-            Controls.Add(button2);
-            Controls.Add(button1);
+            Controls.Add(SaveToFileButton);
+            Controls.Add(UnarchiveButton);
             Controls.Add(label3);
             Controls.Add(OutputTextBox);
             Controls.Add(label2);
@@ -176,8 +178,8 @@
         private Label label2;
         private TextBox OutputTextBox;
         private Label label3;
-        private Button button1;
-        private Button button2;
+        private Button UnarchiveButton;
+        private Button SaveToFileButton;
         private SaveFileDialog SaveFileDialog;
         private Label ratioLabel;
     }

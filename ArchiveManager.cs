@@ -15,6 +15,8 @@ namespace RLE_Algorithm
         public string LogFilePath { get; set; }
 
         public event EventHandler<ArchiveEventArgs> TextCompressed;
+        public event EventHandler<ArchiveEventArgs> TextDecompressed;
+        public event EventHandler<ArchiveEventArgs> FileSaved;
         public event EventHandler<ArchiveEventArgs> ErrorOccured;
 
         public ArchiveManager(ICompressor compressor, string archivedirectory) 
@@ -58,20 +60,51 @@ namespace RLE_Algorithm
             {
                 string outputtext = compressor.CompressText(alltext);
                 outputbox.Text = outputtext;
-                OnTextCompressed(new ArchiveEventArgs() { InputTextSize = alltext.Length, 
-                    OutputTextSize = outputtext.Length, InputTextBox = inputbox, 
-                    OutputTextBox = outputbox, RatioLabel = ratiolabel, LogFilePath = LogFilePath });
+                OnTextCompressed(new ArchiveEventArgs()
+                {
+                    InputTextSize = alltext.Length,
+                    OutputTextSize = outputtext.Length,
+                    InputTextBox = inputbox,
+                    OutputTextBox = outputbox,
+                    RatioLabel = ratiolabel,
+                    LogFilePath = LogFilePath
+                });
             }
         }
-        public void Decompress()
+        public void Decompress(TextBox inputbox, TextBox outputbox)
         {
-
+            string alltext = inputbox.Text;
+            if (string.IsNullOrEmpty(alltext))
+            {
+                OnErrorOccured(new ArchiveEventArgs() { LogFilePath = LogFilePath, ErrorComment = "Поле ввода пусто" });
+            }
+            else
+            {
+                string outputtext = compressor.DecompressText(alltext);
+                outputbox.Text = outputtext;
+                OnTextDecompressed(new ArchiveEventArgs()
+                {
+                    InputTextSize = alltext.Length,
+                    OutputTextSize = outputtext.Length,
+                    InputTextBox = inputbox,
+                    OutputTextBox = outputbox,
+                    LogFilePath = LogFilePath
+                });
+            }
         }
         protected virtual void OnTextCompressed(ArchiveEventArgs args)
         {
             double ratio = (double)args.InputTextSize / args.OutputTextSize;
             args.RatioLabel.Text = $"Текст сжат в ({args.InputTextSize}/{args.OutputTextSize}) = {Math.Round(ratio, 2)} раз";
             TextCompressed?.Invoke(this, args);
+        }
+        protected virtual void OnTextDecompressed(ArchiveEventArgs args)
+        {
+            TextDecompressed?.Invoke(this, args);
+        }
+        protected virtual void OnFileSaved(ArchiveEventArgs args)
+        {
+            FileSaved?.Invoke(this, args);
         }
         protected virtual void OnErrorOccured(ArchiveEventArgs args)
         {

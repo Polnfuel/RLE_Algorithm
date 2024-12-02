@@ -13,6 +13,7 @@ namespace RLE_Algorithm
         {
             this.manager = manager;
             this.manager.TextCompressed += TextCompressed;
+            this.manager.TextDecompressed += TextDecompressed;
             this.manager.ErrorOccured += ErrorOccured;
         }
         private void TextCompressed(object sender, ArchiveEventArgs args)
@@ -20,7 +21,12 @@ namespace RLE_Algorithm
             string message = $"{args.Time}: исходный текст длиной {args.InputTextSize} симв. сжат в {Math.Round((double)args.InputTextSize / args.OutputTextSize, 2)} раз до размера {args.OutputTextSize} симв. \n";
             File.AppendAllText(args.LogFilePath, message);
         }
-        private void TextDecompressed()
+        private void TextDecompressed(object sender, ArchiveEventArgs args)
+        {
+            string message = $"{args.Time}: сжатый текст длиной {args.InputTextSize} симв. был восстановлен до исходного длиной {args.OutputTextSize} симв. \n";
+            File.AppendAllText(args.LogFilePath, message);
+        }
+        private void FileSaved(object sender, ArchiveEventArgs args)
         {
 
         }
