@@ -11,11 +11,12 @@ namespace RLE_Algorithm
     {
         private readonly ICompressor compressor;
         private readonly Logger logger;
-        public ArchiveEventArgs archiveArgs { get; set; }
+        private ArchiveEventArgs ArchiveArgs { get; set; }
         private TextBox InputTextBox { get; set; }
         private TextBox OutputTextBox { get; set; }
+        private Label RatioLabel { get; set; }
         public string InputFilePath { get; set; }
-        public string LogFilePath { get; set; }
+        private string LogFilePath { get; set; }
 
         public event EventHandler<ArchiveEventArgs> TextCompressed;
         public event EventHandler<ArchiveEventArgs> TextDecompressed;
@@ -29,7 +30,7 @@ namespace RLE_Algorithm
             LogFilePath = Path.Combine(archivedirectory, "archive.log");
             InputTextBox = inputbox;
             OutputTextBox = outputbox;
-            archiveArgs = new ArchiveEventArgs() { 
+            ArchiveArgs = new ArchiveEventArgs() { 
                 LogFilePath = LogFilePath, 
                 InputTextBox = InputTextBox, 
                 OutputTextBox = OutputTextBox 
@@ -58,48 +59,54 @@ namespace RLE_Algorithm
             {
                 throw new Exception();
             }
-            archiveArgs.FileName = path;
-            OnFileSaved(archiveArgs);
+            ArchiveArgs.FileName = path;
+            OnFileSaved(ArchiveArgs);
         }
         public void Compress(Label ratiolabel)
         {
+            RatioLabel = ratiolabel;
             string alltext = InputTextBox.Text;
-            if (string.IsNullOrEmpty(alltext))
-            {
-                archiveArgs.ErrorComment = "Поле ввода пусто";
-                OnErrorOccured(archiveArgs);
-            }
-            else
+            try
             {
                 string outputtext = compressor.CompressText(alltext);
                 OutputTextBox.Text = outputtext;
-                archiveArgs.InputTextSize = alltext.Length;
-                archiveArgs.OutputTextSize = outputtext.Length;
-                archiveArgs.RatioLabel = ratiolabel;
-                OnTextCompressed(archiveArgs);
+                ArchiveArgs.InputTextSize = alltext.Length;
+                ArchiveArgs.OutputTextSize = outputtext.Length;
+                OnTextCompressed(ArchiveArgs);
             }
+            catch (FormatException)
+            {
+                ArchiveArgs.ErrorComment = "Введенный текст не пригоден к архивации из-за наличия чисел";
+                OnErrorOccured(ArchiveArgs);
+            }
+            catch (ArgumentException)
+            {
+                ArchiveArgs.ErrorComment = "Поле ввода пусто!";
+                OnErrorOccured(ArchiveArgs);
+            }
+                
         }
         public void Decompress()
         {
             string alltext = InputTextBox.Text;
             if (string.IsNullOrEmpty(alltext))
             {
-                archiveArgs.ErrorComment = "Поле ввода пусто";
-                OnErrorOccured(archiveArgs);
+                ArchiveArgs.ErrorComment = "Поле ввода пусто";
+                OnErrorOccured(ArchiveArgs);
             }
             else
             {
                 string outputtext = compressor.DecompressText(alltext);
                 OutputTextBox.Text = outputtext;
-                archiveArgs.InputTextSize = alltext.Length;
-                archiveArgs.OutputTextSize = outputtext.Length;
-                OnTextDecompressed(archiveArgs);
+                ArchiveArgs.InputTextSize = alltext.Length;
+                ArchiveArgs.OutputTextSize = outputtext.Length;
+                OnTextDecompressed(ArchiveArgs);
             }
         }
         protected virtual void OnTextCompressed(ArchiveEventArgs args)
         {
             double ratio = (double)args.InputTextSize / args.OutputTextSize;
-            args.RatioLabel.Text = $"Текст сжат в ({args.InputTextSize}/{args.OutputTextSize}) = {Math.Round(ratio, 2)} раз";
+            RatioLabel.Text = $"Текст сжат в ({args.InputTextSize}/{args.OutputTextSize}) = {Math.Round(ratio, 2)} раз";
             TextCompressed?.Invoke(this, args);
         }
         protected virtual void OnTextDecompressed(ArchiveEventArgs args)

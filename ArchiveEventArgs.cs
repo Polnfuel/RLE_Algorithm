@@ -13,7 +13,6 @@ namespace RLE_Algorithm
         public int OutputTextSize { get; set; }
         public TextBox InputTextBox { get; set; }
         public TextBox OutputTextBox { get; set; }
-        public Label RatioLabel { get; set; }
         public string ErrorComment { get; set; }
         public string FileName { get; set; }
     }

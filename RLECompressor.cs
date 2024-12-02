@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace RLE_Algorithm
 {
@@ -10,6 +11,13 @@ namespace RLE_Algorithm
     {
         public override string CompressText(string input)
         {
+            for (int j = 0; j < input.Length; j++)
+            {
+                if (Char.IsDigit(input[j]))
+                    throw new FormatException();
+            }
+            if (string.IsNullOrEmpty(input))
+                throw new ArgumentException();
             StringBuilder result = new StringBuilder();
             int count = 1;
             for (int i = 1; i <= input.Length; i++)
