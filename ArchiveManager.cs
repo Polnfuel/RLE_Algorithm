@@ -11,6 +11,7 @@ namespace RLE_Algorithm
     {
         private readonly ICompressor compressor;
         private readonly Logger logger;
+        private readonly DocxFileHandler docx;
         private ArchiveEventArgs ArchiveArgs { get; set; }
         private TextBox InputTextBox { get; set; }
         private TextBox OutputTextBox { get; set; }
@@ -27,6 +28,7 @@ namespace RLE_Algorithm
         {
             this.compressor = compressor;
             logger = new Logger(this);
+            docx = new DocxFileHandler(archivedirectory, this);
             LogFilePath = Path.Combine(archivedirectory, "archive.log");
             InputTextBox = inputbox;
             OutputTextBox = outputbox;
