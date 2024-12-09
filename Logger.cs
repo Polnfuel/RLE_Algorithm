@@ -29,7 +29,7 @@ namespace RLE_Algorithm
         }
         private void FileSaved(object sender, ArchiveEventArgs args)
         {
-            string message = $"{DateTime.Now}: текст длиной {args.OutputTextSize} сохранен в файл \"{args.FileName}\"\n";
+            string message = $"{DateTime.Now}: текст длиной {args.OutputTextSize} симв. сохранен в файл \"{args.FileName}\"\n";
             File.AppendAllText(args.LogFilePath, message);
         }
         private void ErrorOccured(object sender, ArchiveEventArgs args)

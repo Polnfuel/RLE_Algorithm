@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DocumentFormat.OpenXml.ExtendedProperties;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,7 +12,7 @@ namespace RLE_Algorithm
     {
         private readonly ICompressor compressor;
         private readonly Logger logger;
-        private readonly DocxFileHandler docx;
+        private readonly FileHandler docx;
         private ArchiveEventArgs ArchiveArgs { get; set; }
         private TextBox InputTextBox { get; set; }
         private TextBox OutputTextBox { get; set; }
@@ -28,7 +29,7 @@ namespace RLE_Algorithm
         {
             this.compressor = compressor;
             logger = new Logger(this);
-            docx = new DocxFileHandler(archivedirectory, this);
+            docx = new FileHandler(archivedirectory, this);
             LogFilePath = Path.Combine(archivedirectory, "archive.log");
             InputTextBox = inputbox;
             OutputTextBox = outputbox;
@@ -38,31 +39,55 @@ namespace RLE_Algorithm
                 OutputTextBox = OutputTextBox 
             };
         }
-        
         public string ReadFromFile(string path)
         {
             try
             {
-                string input = File.ReadAllText(path);
-                return input;
+                return FileHandler.ReadTextFromFile(path);
+            }
+            catch (ArgumentException)
+            {
+                MessageBox.Show("Выбранный файл пуст!", "Внимание", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
             catch (Exception)
             {
-                throw new Exception();
+                ArchiveArgs.ErrorComment = "Не удалось открыть файл";
+                OnErrorOccured(ArchiveArgs);
             }
+            return string.Empty;
         }
-        public void SaveToFile(string path, string input)
+        public void SaveToFile()
         {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "Text files (*.TXT)|*.txt";
             try
             {
-                File.WriteAllText(path, input);
+                if (OutputTextBox.Text == string.Empty)
+                    throw new ArgumentException();
+                if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    FileHandler.SaveTextToFile(saveFileDialog.FileName, OutputTextBox.Text);
+                    ArchiveArgs.FileName = saveFileDialog.FileName;
+                    OnFileSaved(ArchiveArgs);
+                }
+            }
+            catch (ArgumentException)
+            {
+                if (MessageBox.Show("Текстовое поле пусто! Все равно сохранить?", "Внимание!", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+                {
+                    if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                    {
+                        FileHandler.SaveTextToFile(saveFileDialog.FileName, OutputTextBox.Text);
+                        ArchiveArgs.FileName = saveFileDialog.FileName;
+                        OnFileSaved(ArchiveArgs);
+                    }
+                }
             }
             catch (Exception)
             {
-                throw new Exception();
+                ArchiveArgs.ErrorComment = "Не удалось сохранить в файл";
+                OnErrorOccured(ArchiveArgs);
             }
-            ArchiveArgs.FileName = path;
-            OnFileSaved(ArchiveArgs);
         }
         public void Compress(Label ratiolabel)
         {
@@ -85,24 +110,28 @@ namespace RLE_Algorithm
             {
                 ArchiveArgs.ErrorComment = "Поле ввода пусто!";
                 OnErrorOccured(ArchiveArgs);
-            }
-                
+            }  
         }
         public void Decompress()
         {
             string alltext = InputTextBox.Text;
-            if (string.IsNullOrEmpty(alltext))
-            {
-                ArchiveArgs.ErrorComment = "Поле ввода пусто";
-                OnErrorOccured(ArchiveArgs);
-            }
-            else
+            try
             {
                 string outputtext = compressor.DecompressText(alltext);
                 OutputTextBox.Text = outputtext;
                 ArchiveArgs.InputTextSize = alltext.Length;
                 ArchiveArgs.OutputTextSize = outputtext.Length;
                 OnTextDecompressed(ArchiveArgs);
+            }
+            catch (FormatException)
+            {
+                ArchiveArgs.ErrorComment = "Введенный текст не содержит чисел";
+                OnErrorOccured(ArchiveArgs);
+            }
+            catch (ArgumentException)
+            {
+                ArchiveArgs.ErrorComment = "Поле ввода пусто!";
+                OnErrorOccured(ArchiveArgs);
             }
         }
         protected virtual void OnTextCompressed(ArchiveEventArgs args)
@@ -113,6 +142,7 @@ namespace RLE_Algorithm
         }
         protected virtual void OnTextDecompressed(ArchiveEventArgs args)
         {
+            RatioLabel.Text = string.Empty;
             TextDecompressed?.Invoke(this, args);
         }
         protected virtual void OnFileSaved(ArchiveEventArgs args)
@@ -121,7 +151,7 @@ namespace RLE_Algorithm
         }
         protected virtual void OnErrorOccured(ArchiveEventArgs args)
         {
-            MessageBox.Show(args.ErrorComment, "Ошибка", MessageBoxButtons.OKCancel, MessageBoxIcon.Error);
+            MessageBox.Show(args.ErrorComment, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             ErrorOccured?.Invoke(this, args);
         }
     }

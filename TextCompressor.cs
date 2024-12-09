@@ -7,10 +7,9 @@ using System.Threading.Tasks;
 
 namespace RLE_Algorithm
 {
-    public abstract class BaseCompressor : ICompressor
+    public abstract class TextCompressor : ICompressor
     {
         public abstract string CompressText(string input);
         public abstract string DecompressText(string input);
-        
     }
 }

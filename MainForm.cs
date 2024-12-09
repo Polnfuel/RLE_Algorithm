@@ -16,6 +16,7 @@ namespace RLE_Algorithm
         private void MainForm_Load(object sender, EventArgs e)
         {
             filenameLabel.Text = string.Empty;
+            ratioLabel.Text = string.Empty;
 
             ArchiveDirectory = Directory.GetCurrentDirectory();
             for (int i = 0; i <= 2; i++)
@@ -49,32 +50,7 @@ namespace RLE_Algorithm
 
         private void SaveToFileButton_Click(object sender, EventArgs e)
         {
-            SaveFileDialog.Filter = "Text files (*.TXT)|*.txt";
-            try
-            {
-                if (OutputTextBox.Text == string.Empty)
-                    throw new ArgumentException();
-                if (SaveFileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    //File.AppendAllText(SaveFileDialog.FileName, OutputTextBox.Text);
-                    manager.SaveToFile(SaveFileDialog.FileName, OutputTextBox.Text);
-                }
-            }
-            catch (ArgumentException)
-            {
-                if (MessageBox.Show("Текстовое поле пусто! Все равно сохранить?", "Внимание!", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
-                {
-                    if (SaveFileDialog.ShowDialog() == DialogResult.OK)
-                    {
-                        //File.AppendAllText(SaveFileDialog.FileName, OutputTextBox.Text);
-                        manager.SaveToFile(SaveFileDialog.FileName, OutputTextBox.Text);
-                    }
-                }
-            }
-            catch (Exception)
-            {
-                MessageBox.Show("Неизвестная ошибка", "Внимание!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            manager.SaveToFile();
         }
     }
 }

@@ -8,11 +8,11 @@ using DocumentFormat.OpenXml.Wordprocessing;
 
 namespace RLE_Algorithm
 {
-    public class DocxFileHandler
+    public class FileHandler
     {
         public string DocxFilePath { get; set; }
         private readonly ArchiveManager manager;
-        public DocxFileHandler(string archiveDirPath, ArchiveManager manager)
+        public FileHandler(string archiveDirPath, ArchiveManager manager)
         {
             DocxFilePath = Path.Combine(archiveDirPath, "archive.docx");
             this.manager = manager;
@@ -28,7 +28,7 @@ namespace RLE_Algorithm
                 mainpart.Document = new Document(new Body());
             }
         }
-        public void AppendText(string text)
+        public void AppendText(string text, bool alignCenter = false)
         {
             using (WordprocessingDocument worddoc = WordprocessingDocument.Open(DocxFilePath, true))
             {
@@ -38,7 +38,7 @@ namespace RLE_Algorithm
                 runprops.Append(new RunFonts { Ascii = "Consolas" });
                 runprops.Append(new FontSize { Val = (12 * 2).ToString() });
                 ParagraphProperties parprops = new ParagraphProperties();
-                parprops.Append(new Justification { Val = JustificationValues.Left });
+                parprops.Append(new Justification { Val = alignCenter ? JustificationValues.Center : JustificationValues.Left });
                 parprops.Append(new SpacingBetweenLines { Before = 0.ToString(), After = 0.ToString() });
 
                 Run run = new Run(runprops);
@@ -49,23 +49,34 @@ namespace RLE_Algorithm
                 worddoc.MainDocumentPart.Document.Save();
             }
         }
+        public static string ReadTextFromFile(string path)
+        {
+            string input = File.ReadAllText(path);
+            if (string.IsNullOrEmpty(input))
+                throw new ArgumentException();
+            return input;
+        }
+        public static void SaveTextToFile(string path, string input)
+        {
+            File.WriteAllText(path, input);
+        }
         private void TextCompressed(object sender, ArchiveEventArgs args)
         {
-            AppendText("============== Исходный текст ================");
+            AppendText("==== Исходный текст ====", true);
             AppendText(args.InputTextBox.Text);
-            AppendText("==============================================");
-            AppendText($"========== Архивированный текст (сжат в {Math.Round((double)args.InputTextSize / args.OutputTextSize, 2)}) раз =========");
+            AppendText("========================", true);
+            AppendText($"==== Архивированный текст (сжат в {Math.Round((double)args.InputTextSize / args.OutputTextSize, 2)}) раз ====", true);
             AppendText(args.OutputTextBox.Text);
-            AppendText("===================================");
+            AppendText("============================================", true);
         }
         private void TextDecompressed(object sender, ArchiveEventArgs args)
         {
-            AppendText("============= Архивированный текст ===========");
+            AppendText("==== Архивированный текст ====", true);
             AppendText(args.InputTextBox.Text);
-            AppendText("==============================================");
-            AppendText($"=========== Разархивированный текст =========");
+            AppendText("=============================", true);
+            AppendText($"==== Разархивированный текст ====", true);
             AppendText(args.OutputTextBox.Text);
-            AppendText("==============================================");
+            AppendText("===============================", true);
         }
     }
 }
