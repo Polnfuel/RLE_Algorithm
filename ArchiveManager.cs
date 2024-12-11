@@ -25,7 +25,7 @@ namespace RLE_Algorithm
         public event EventHandler<ArchiveEventArgs> FileSaved;
         public event EventHandler<ArchiveEventArgs> ErrorOccured;
 
-        public ArchiveManager(ICompressor compressor, string archivedirectory, TextBox inputbox, TextBox outputbox) 
+        public ArchiveManager(ICompressor compressor, string archivedirectory, TextBox inputbox, TextBox outputbox, Label ratiolabel) 
         {
             this.compressor = compressor;
             logger = new Logger(this);
@@ -33,10 +33,11 @@ namespace RLE_Algorithm
             LogFilePath = Path.Combine(archivedirectory, "archive.log");
             InputTextBox = inputbox;
             OutputTextBox = outputbox;
+            RatioLabel = ratiolabel;
             ArchiveArgs = new ArchiveEventArgs() { 
                 LogFilePath = LogFilePath, 
                 InputTextBox = InputTextBox, 
-                OutputTextBox = OutputTextBox 
+                OutputTextBox = OutputTextBox
             };
         }
         public string ReadFromFile(string path)
@@ -89,9 +90,8 @@ namespace RLE_Algorithm
                 OnErrorOccured(ArchiveArgs);
             }
         }
-        public void Compress(Label ratiolabel)
+        public void Compress()
         {
-            RatioLabel = ratiolabel;
             string alltext = InputTextBox.Text;
             try
             {

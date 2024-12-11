@@ -22,10 +22,22 @@ namespace RLE_Algorithm
         }
         public void CreateDocx()
         {
-            using (WordprocessingDocument worddoc = WordprocessingDocument.Create(DocxFilePath, DocumentFormat.OpenXml.WordprocessingDocumentType.Document))
+            bool success = false;
+            while (!success)
             {
-                MainDocumentPart mainpart = worddoc.AddMainDocumentPart();
-                mainpart.Document = new Document(new Body());
+                try
+                {
+                    using (WordprocessingDocument worddoc = WordprocessingDocument.Create(DocxFilePath, DocumentFormat.OpenXml.WordprocessingDocumentType.Document))
+                    {
+                        MainDocumentPart mainpart = worddoc.AddMainDocumentPart();
+                        mainpart.Document = new Document(new Body());
+                    }
+                    success = true;
+                }
+                catch (IOException)
+                {
+                    MessageBox.Show($"Сперва закройте файл {Path.GetFileName(DocxFilePath)}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
         public void AppendText(string text, bool alignCenter = false)
@@ -62,21 +74,37 @@ namespace RLE_Algorithm
         }
         private void TextCompressed(object sender, ArchiveEventArgs args)
         {
-            AppendText("==== Исходный текст ====", true);
-            AppendText(args.InputTextBox.Text);
-            AppendText("========================", true);
-            AppendText($"==== Архивированный текст (сжат в {Math.Round((double)args.InputTextSize / args.OutputTextSize, 2)}) раз ====", true);
-            AppendText(args.OutputTextBox.Text);
-            AppendText("============================================", true);
+            try
+            {
+                AppendText("==== Исходный текст ====", true);
+                AppendText(args.InputTextBox.Text);
+                AppendText("========================", true);
+                AppendText($"==== Архивированный текст (сжат в {Math.Round((double)args.InputTextSize / args.OutputTextSize, 2)}) раз ====", true);
+                AppendText(args.OutputTextBox.Text);
+                AppendText("============================================", true);
+            }
+            catch (IOException)
+            {
+                MessageBox.Show($"Не удалось добавить содержимое в файл {Path.GetFileName(DocxFilePath)}, " +
+                    $"так как он открыт в другой программе. Закройте файл и попробуйте снова", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
         private void TextDecompressed(object sender, ArchiveEventArgs args)
         {
-            AppendText("==== Архивированный текст ====", true);
-            AppendText(args.InputTextBox.Text);
-            AppendText("=============================", true);
-            AppendText($"==== Разархивированный текст ====", true);
-            AppendText(args.OutputTextBox.Text);
-            AppendText("===============================", true);
+            try
+            {
+                AppendText("==== Архивированный текст ====", true);
+                AppendText(args.InputTextBox.Text);
+                AppendText("=============================", true);
+                AppendText($"==== Разархивированный текст ====", true);
+                AppendText(args.OutputTextBox.Text);
+                AppendText("===============================", true);
+            }
+            catch (IOException)
+            {
+                MessageBox.Show($"Не удалось добавить содержимое в файл {Path.GetFileName(DocxFilePath)}, " +
+                    $"так как он открыт в другой программе. Закройте файл и попробуйте снова", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }

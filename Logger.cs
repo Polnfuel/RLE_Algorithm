@@ -8,7 +8,7 @@ namespace RLE_Algorithm
 {
     public class Logger
     {
-        private ArchiveManager manager;
+        private readonly ArchiveManager manager;
         public Logger(ArchiveManager manager)
         {
             this.manager = manager;
