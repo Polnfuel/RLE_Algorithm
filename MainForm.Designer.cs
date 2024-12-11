@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             SelectFileButton = new Button();
             filenameLabel = new Label();
             label1 = new Label();
@@ -39,13 +40,12 @@
             label3 = new Label();
             UnarchiveButton = new Button();
             SaveToFileButton = new Button();
-            SaveFileDialog = new SaveFileDialog();
             ratioLabel = new Label();
             SuspendLayout();
             // 
             // SelectFileButton
             // 
-            SelectFileButton.Location = new Point(53, 370);
+            SelectFileButton.Location = new Point(503, 64);
             SelectFileButton.Name = "SelectFileButton";
             SelectFileButton.Size = new Size(119, 29);
             SelectFileButton.TabIndex = 0;
@@ -56,7 +56,7 @@
             // filenameLabel
             // 
             filenameLabel.AutoSize = true;
-            filenameLabel.Location = new Point(53, 402);
+            filenameLabel.Location = new Point(503, 96);
             filenameLabel.Name = "filenameLabel";
             filenameLabel.Size = new Size(50, 20);
             filenameLabel.TabIndex = 1;
@@ -65,7 +65,7 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(68, 4);
+            label1.Location = new Point(198, 9);
             label1.Name = "label1";
             label1.Size = new Size(107, 20);
             label1.TabIndex = 2;
@@ -73,15 +73,16 @@
             // 
             // InputTextBox
             // 
-            InputTextBox.Location = new Point(12, 27);
+            InputTextBox.Location = new Point(12, 32);
             InputTextBox.Multiline = true;
             InputTextBox.Name = "InputTextBox";
-            InputTextBox.Size = new Size(239, 337);
+            InputTextBox.ScrollBars = ScrollBars.Vertical;
+            InputTextBox.Size = new Size(485, 134);
             InputTextBox.TabIndex = 3;
             // 
             // ArchiveButton
             // 
-            ArchiveButton.Location = new Point(341, 12);
+            ArchiveButton.Location = new Point(117, 172);
             ArchiveButton.Name = "ArchiveButton";
             ArchiveButton.Size = new Size(121, 29);
             ArchiveButton.TabIndex = 6;
@@ -92,7 +93,7 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(405, 75);
+            label2.Location = new Point(190, 234);
             label2.Name = "label2";
             label2.Size = new Size(118, 20);
             label2.TabIndex = 7;
@@ -100,16 +101,17 @@
             // 
             // OutputTextBox
             // 
-            OutputTextBox.Location = new Point(341, 98);
+            OutputTextBox.Location = new Point(12, 257);
             OutputTextBox.Multiline = true;
             OutputTextBox.Name = "OutputTextBox";
-            OutputTextBox.Size = new Size(270, 296);
+            OutputTextBox.ScrollBars = ScrollBars.Vertical;
+            OutputTextBox.Size = new Size(485, 134);
             OutputTextBox.TabIndex = 9;
             // 
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(12, 374);
+            label3.Location = new Point(544, 41);
             label3.Name = "label3";
             label3.Size = new Size(35, 20);
             label3.TabIndex = 10;
@@ -117,7 +119,7 @@
             // 
             // UnarchiveButton
             // 
-            UnarchiveButton.Location = new Point(468, 13);
+            UnarchiveButton.Location = new Point(244, 172);
             UnarchiveButton.Name = "UnarchiveButton";
             UnarchiveButton.Size = new Size(143, 29);
             UnarchiveButton.TabIndex = 11;
@@ -127,7 +129,7 @@
             // 
             // SaveToFileButton
             // 
-            SaveToFileButton.Location = new Point(405, 400);
+            SaveToFileButton.Location = new Point(503, 326);
             SaveToFileButton.Name = "SaveToFileButton";
             SaveToFileButton.Size = new Size(146, 29);
             SaveToFileButton.TabIndex = 12;
@@ -138,7 +140,7 @@
             // ratioLabel
             // 
             ratioLabel.AutoSize = true;
-            ratioLabel.Location = new Point(341, 44);
+            ratioLabel.Location = new Point(117, 204);
             ratioLabel.Name = "ratioLabel";
             ratioLabel.Size = new Size(42, 20);
             ratioLabel.TabIndex = 13;
@@ -148,7 +150,7 @@
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
+            ClientSize = new Size(675, 423);
             Controls.Add(ratioLabel);
             Controls.Add(SaveToFileButton);
             Controls.Add(UnarchiveButton);
@@ -160,6 +162,7 @@
             Controls.Add(label1);
             Controls.Add(filenameLabel);
             Controls.Add(SelectFileButton);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "MainForm";
             Text = "Архиватор алгоритмом RLE";
             Load += MainForm_Load;
@@ -180,7 +183,6 @@
         private Label label3;
         private Button UnarchiveButton;
         private Button SaveToFileButton;
-        private SaveFileDialog SaveFileDialog;
         private Label ratioLabel;
     }
 }
