@@ -7,12 +7,10 @@ namespace RLE_Algorithm
     {
         ArchiveManager manager;
         public string ArchiveDirectory { get; set; }
-
         public MainForm()
         {
             InitializeComponent();
         }
-
         private void MainForm_Load(object sender, EventArgs e)
         {
             filenameLabel.Text = string.Empty;
@@ -26,7 +24,6 @@ namespace RLE_Algorithm
 
             manager = new ArchiveManager(new RLECompressor(), ArchiveDirectory, InputTextBox, OutputTextBox, ratioLabel);
         }
-
         private void SelectFileButton_Click(object sender, EventArgs e)
         {
             OpenFileDialog.Filter = "Text files (*.TXT)|*.txt";
@@ -37,17 +34,14 @@ namespace RLE_Algorithm
                 InputTextBox.Text = manager.ReadFromFile(manager.InputFilePath);
             }
         }
-
         private void ArchiveButton_Click(object sender, EventArgs e)
         {
             manager.Compress();
         }
-
         private void UnarchiveButton_Click(object sender, EventArgs e)
         {
             manager.Decompress();
         }
-
         private void SaveToFileButton_Click(object sender, EventArgs e)
         {
             manager.SaveToFile();

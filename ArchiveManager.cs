@@ -108,7 +108,7 @@ namespace RLE_Algorithm
             }
             catch (ArgumentException)
             {
-                ArchiveArgs.ErrorComment = "Поле ввода пусто!";
+                ArchiveArgs.ErrorComment = "Сперва введите текст!";
                 OnErrorOccured(ArchiveArgs);
             }  
         }
@@ -125,12 +125,12 @@ namespace RLE_Algorithm
             }
             catch (FormatException)
             {
-                ArchiveArgs.ErrorComment = "Введенный текст не содержит чисел";
+                ArchiveArgs.ErrorComment = "Введенный текст не в сжатом формате";
                 OnErrorOccured(ArchiveArgs);
             }
             catch (ArgumentException)
             {
-                ArchiveArgs.ErrorComment = "Поле ввода пусто!";
+                ArchiveArgs.ErrorComment = "Сперва введите текст!";
                 OnErrorOccured(ArchiveArgs);
             }
         }
